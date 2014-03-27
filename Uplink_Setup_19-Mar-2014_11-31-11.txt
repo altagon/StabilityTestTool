@@ -1,0 +1,75 @@
+		Uplink Setup Work order for Wed Mar 19 11:31:11 EDT 2014  Rel 0.1
+		-----------------------------------------------------------------
+
+
+1. Channel : 112
+
+2. Physical Connection : RF
+
+3. Input Testn Case : 9.0
+
+	1. TC Name = C22&" ("&D22&")"
+	2. Format/Modulation = DVB-S2: QPSK
+	3. Rate (Msym) = 30.0 Msym : 5/6
+	4. Bandwidth (Mbit) = 48.459
+
+4. CA Test Case : 3.0
+
+	1. Scrambling Mode = PowerVu - DES
+	2. MSK = Odd
+	3. Channel Setup = CW Type: Variable        Tier bits: 0-19        Blkout code: 1-11
+
+5. Video Test Case :6.0
+
+	1. Video Format = MPEG2-SD NTSC
+	2. Picture (resolution) = 
+	3. Profile/Feature = 
+	4. GOP Settings = 
+	5. 3:2 PullDown = OFF
+	6. Video Bit Rate = 10MBPS
+	7. Video Rate = CBR
+
+6. Audio#1 Test Case : 38.0
+
+	1. TC Name = "AAC-mp4-LOAS("&D47&") SBR Off, TNS On, "&G47&H47&I47&J47&" - "&K47
+
+7. Audio#2 Test Case :0.0
+
+	1. TC Name = "AAC-mp4-LOAS("&D47&") SBR Off, TNS On, "&G47&H47&I47&J47&" - "&K47
+
+8. Trancode#1 Test Case : 5.0  subject of automatic setup
+
+9. Trancode#2 Test Case : 5.0  subject of automatic setup
+
+10. Subtitle Test Case : 4.0
+
+	1. TC Name = DVB-PAL
+	2. Video Std = 
+	3. Subtitle Std = DVB PAL
+
+11. VBI Test Case : 5.0
+
+	1. TC Name = C14&" - "&D14
+
+12. LSD Test Case : 3.0
+
+	1. TC Name = C12&" PID(s) @ "&D12&" Mbps/PID, Frame Size:"&F12&", Constant Flow"
+
+13. MPE Test Case : 2.0
+
+	1. TC Name = C10&" bps"
+	2. Rate per PID (Mbits) = 
+	3. Aggregate Rate (Mbits) = 
+	4. Frame Size = 
+	5. Flow Type = 
+
+14. FPT Test Case : Yes
+
+15. CC Test Case : No
+
+16. DPM 58/59 Test Case : 5.0 subject of automatic setup
+
+17. DPM 24/54 Test Case : 2.0 subject of automatic setup
+
+
+***  End of Uplink Setup Work order  ***
