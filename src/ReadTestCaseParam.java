@@ -41,7 +41,7 @@ public class ReadTestCaseParam {
 	
         try {
       
-        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get("scoreBoard" + devName));
+        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get(devName +".scoreboard"));
             //Get the workbook instance for XLS file
             XSSFWorkbook workBook = new XSSFWorkbook(scoreBoardStream);
             
@@ -99,7 +99,7 @@ public class ReadTestCaseParam {
 	
         try {
 
-        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get("scoreBoard" + devName));
+        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get(devName + ".scoreboard"));
             //Get the workbook instance for XLS file
             XSSFWorkbook workBook = new XSSFWorkbook(scoreBoardStream);
             
@@ -109,7 +109,7 @@ public class ReadTestCaseParam {
             XSSFSheet sheet = workBook.getSheetAt(DPM_TAB);   
             int startRow = 9;
             try {
-            	startRow = Integer.parseInt(StabilitySetup.properties.get("scoreBoard" + devName + "StartLineDpm"));
+            	startRow = Integer.parseInt(StabilitySetup.properties.get( devName + ".scoreboard.StartLineDpm"));
             } catch(Exception e) {}
 
             for (int rowId = startRow; ; rowId++) {
@@ -166,7 +166,7 @@ public class ReadTestCaseParam {
 		
         try {
         	
-        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get("scoreBoard" + devName));
+        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get(devName + ".scoreboard"));
             //Get the workbook instance for XLS file
             XSSFWorkbook workBook = new XSSFWorkbook(scoreBoardStream);
             
@@ -176,7 +176,7 @@ public class ReadTestCaseParam {
             XSSFSheet sheet = workBook.getSheetAt(TXC_TAB);   
             int startRow = 10;
             try {
-            	startRow = Integer.parseInt(StabilitySetup.properties.get("scoreBoard" + devName + "StartLineTxc"));
+            	startRow = Integer.parseInt(StabilitySetup.properties.get(devName + ".scoreBoard.StartLineTxc"));
             }
             catch(Exception e) {}
             
@@ -235,7 +235,7 @@ public class ReadTestCaseParam {
             //
             sheet = workBook.getSheetAt(DPM_TAB);   
             try {
-            	startRow = Integer.parseInt(StabilitySetup.properties.get("scoreBoard" + devName + "StartLineTxc"));
+            	startRow = Integer.parseInt(StabilitySetup.properties.get(devName + ".scoreboard.StartLineTxc"));
             } catch(Exception e) {
             	startRow = 9;
             }

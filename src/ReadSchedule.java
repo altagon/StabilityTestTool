@@ -27,24 +27,50 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ReadSchedule {
 	
 	private ArrayList<String> schedParam = new ArrayList<String>();
+	private String devName = "D9859";
+	private Date today = new Date();
+	private boolean bFound = false;
 	
 	public ArrayList<String> getParam() { return schedParam; }
 	
-	public int getInput() { return Utility.getIntVal(schedParam.get(1)); }
-	public int getTxc1()  { return Utility.getIntVal(schedParam.get(6)); }
-	public int getTxc2()  { return Utility.getIntVal(schedParam.get(7)); }
-	public int getDpm1()  { return Utility.getIntVal(schedParam.get(14)); }
-	public int getDpm2()  { return Utility.getIntVal(schedParam.get(15)); }
+	public boolean isFound() 	{ return bFound; }
 	
+	public int getChan()  		{ return Utility.getIntVal(schedParam.get(1)); }
+	public int getInput() 		{ return Utility.getIntVal(schedParam.get(2)); }
+	public int getTxc1()  		{ return Utility.getIntVal(schedParam.get(13)); }
+	public int getTxc2()  		{ return Utility.getIntVal(schedParam.get(14)); }
+	public int getDpm1()  		{ return Utility.getIntVal(schedParam.get(15)); }
+	public int getDpm2()  		{ return Utility.getIntVal(schedParam.get(16)); }
+	public int getRfSource() 	{ return  schedParam.get(20).equalsIgnoreCase("ASI")?0:1; }
+	
+	public ReadSchedule(String devName, Date today)
+    {	
+		this.devName = devName;
+		this.today = today;
 		
-    public ReadSchedule(Date today)
-    {
+		readIt();
+    }
+	
+	public ReadSchedule(Date today)
+    {	
+		this.today = today;
+		
+		readIt();
+    }
+
+	public ReadSchedule()
+    {	
+		readIt();
+    }
+
+    private void readIt()
+    {	
     	Calendar calToday  = Calendar.getInstance();
     	Calendar calCurDay = Calendar.getInstance();
     	calToday.setTime(today);
     	
         try {
-        	FileInputStream scheduleStream = new FileInputStream(StabilitySetup.properties.get("testSchedule"));
+        	FileInputStream scheduleStream = new FileInputStream(StabilitySetup.properties.get(devName+"."+"schedule"));
             //Get the workbook instance for XLS file
             XSSFWorkbook workBook = new XSSFWorkbook(scheduleStream);
             //Get first sheet from the workbook
@@ -52,7 +78,7 @@ public class ReadSchedule {
             int startLine = 1;
             
             try {
-            	startLine = Integer.parseInt(StabilitySetup.properties.get("testScheduleStartLine"));
+            	startLine = Integer.parseInt(StabilitySetup.properties.get(devName+"."+"schedule.StartLine"));
             } catch(Exception e) {}
             
             for (int lineId = startLine; ; lineId++) {
@@ -61,10 +87,7 @@ public class ReadSchedule {
                 	//--- System.out.println("****  END OF SCHEDULE  ***");
                 	break;
                 }
-                if(lineId == 0) {
-                	// check headers
-                	continue;
-                }
+
                 try {
                 	Cell curDate = row.getCell(1);
                 	//System.out.println(curDate.toString());
@@ -74,7 +97,7 @@ public class ReadSchedule {
                  	calCurDay.setTime(curDay);
                 	
                 	if(calCurDay.get(Calendar.DAY_OF_YEAR) == calToday.get(Calendar.DAY_OF_YEAR)) {
-                		
+                		bFound = true;
                    		for(int i = 1; ; i++) {
                 			Cell c = row.getCell(i);
                 			if(c != null) {
@@ -103,8 +126,8 @@ public class ReadSchedule {
             } // lineId
             
             // required test date was not found
-            if(getDpm1() < 0 || getDpm2() < 0 || getTxc1() < 0 || getTxc2() < 0) {
-            	System.out.println("!!! Required date was not found : " +today.toString() + "\n");
+            if(!bFound) {
+            	System.out.println("Schedulle Error: Required date was not found : " +today.toString() + "!!! Your schedule may be expired ...\n");
             	System.exit(1);
             }
             

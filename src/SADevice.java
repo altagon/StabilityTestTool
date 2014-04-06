@@ -30,8 +30,11 @@ public abstract class SADevice {
 	
 	public String fileNameSuffix				= null;
 	public Map<String,Integer> oids 			= new LinkedHashMap<String,Integer>(); 
-	public int channelNumber					= 999;
 	
+	protected int channelNumber					= -1;
+	protected int inp							= -1;
+	protected int rfSource						= -1;
+
 	boolean isDecoder() 	{ return false; }
 	boolean isTranscoder() 	{ return false; }
 	
@@ -46,13 +49,15 @@ public abstract class SADevice {
 
 	}
 	
-	void createBackupFile(String devName)
+	void createBackupFile(String devName, int designationNum)
 	{
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<BKPRST>\n<FILE_INFO>\n<PLAT_TYPE>");
 		buf.append(devName.replace('_', '-'));
-		buf.append("</PLAT_TYPE>\n<DESIGNATION>14</DESIGNATION>\n</FILE_INFO>\n<SETTINGS>\n");
+		buf.append("</PLAT_TYPE>\n<DESIGNATION>");
+		buf.append(designationNum);
+		buf.append("</DESIGNATION>\n</FILE_INFO>\n<SETTINGS>\n");
 		
 		for (Entry<String, Integer> entry : oids.entrySet()) {
 		    String  key   = entry.getKey();
@@ -156,9 +161,9 @@ public abstract class SADevice {
 		return 0;
 	}
 
-	void configRFParam(String devName, int inpTCNum)
+	void configRFParam(String devName)
 	{
-		ReadTestCaseParam inpTC = new ReadTestCaseParam("D9859", 4, 13, inpTCNum);
+		ReadTestCaseParam inpTC = new ReadTestCaseParam("D9859", 4, 13, inp);
 		ArrayList<String> videoTCParam = inpTC.getParam();
 
 		//---System.out.println(videoTCParam);
@@ -168,34 +173,35 @@ public abstract class SADevice {
 		
 		addComment("*** Beginning of RF section ***");
 		
-		final String[] inpSelStr = new String[] {"ASI", "RF1", "RF2", "RF3", "RF4", "MPEGoIP"};
-		int inpSelIdx = -1;
-		for(int i = 0; i < inpSelStr.length; i++)
-			if(s1.indexOf(inpSelStr[i]) > 0 ) {
-				inpSelIdx = i;
-				break;
+		int inpSelIdx;
+		
+		if(rfSource == 0)
+			inpSelIdx = 0;	// ASI test case
+		else {				// RF test case
+			if((inpSelIdx = Utility.getIntVal(StabilitySetup.properties.get(devName + ".RF"))) == Utility.BAD_INT) {
+				inpSelIdx = 1;
 			}
-		if(inpSelIdx < 0)
-			inpSelIdx = Utility.getIntVal(StabilitySetup.properties.get("AciveRFInput"));
-					
-		setOid("5.1.1.0", inpSelIdx);
-								
+		}
+		
+		setOid("5.1.1.0", inpSelIdx);																// set RF[1-4]/ASI source
+		setOid("4.2.1.1.2.", 1, 8, channelNumber);													// set channel		
+		
 		setOid("5.4.1.1.5.1", 1 );																	// Input Select: Def(1), UserCfg(2)
-		setOid("5.2.1.1.3.1", Utility.getIntVal(StabilitySetup.properties.get("LO1Frequency"))); 	// Frequency (LO1) in kHz
+		setOid("5.2.1.1.3.1", Utility.getIntVal(StabilitySetup.properties.get("Uplink.LO1Frequency"))); 	// Frequency (LO1) in kHz
 		setOid("5.2.1.1.4.1", Utility.getIntVal(s2)*10000);											// Symbol rate in kSym
 		setOid("5.2.1.1.5.1", 0x0A ); 																//  Active Tuner DVBS FEC : Audio(0A)
 		setOid("5.2.1.1.6.1", s1.indexOf("DVB-S2")<0?1:2); 											// Modulation DVB-S(1), DVB-S2(2)
-		setOid("5.2.1.1.7.1", Utility.getIntVal(StabilitySetup.properties.get("RollOff")) ); 		// Roll Off: 0.35(1), 0.25(2), 0.2(3)
+		setOid("5.2.1.1.7.1", Utility.getIntVal(StabilitySetup.properties.get("Uplink.RollOff")) ); // Roll Off: 0.35(1), 0.25(2), 0.2(3)
 		setOid("5.2.1.1.8.1", 1); 																	// Tuner IQ: Opposite(1), Normal(2), Auto(3)
 		setOid("5.2.2.1.8.1", 1); 																	// Active Input Local OSC Control: Off(1), On(2), Auto(3)
-		setOid("5.2.3.1.3.1", 1); 																	// Inp Poower Control: Off(0), 13V(1), 18V(2), H-NIT(3), V-NIT(4)	
-		setOid("5.2.2.1.5.1", Utility.getIntVal(StabilitySetup.properties.get("OscFrequency1"))); 	// Active input local OSC Freq #1
-		setOid("5.2.2.1.5.2", Utility.getIntVal(StabilitySetup.properties.get("OscFrequency2"))); 	// Active input local OSC Freq #2
-		setOid("5.2.2.1.5.3", Utility.getIntVal(StabilitySetup.properties.get("OscFrequency3"))); 	// Active input local OSC Freq #3
-		setOid("5.2.2.1.5.4", Utility.getIntVal(StabilitySetup.properties.get("OscFrequency4"))); 	// Active input local OSC Freq #4
+		setOid("5.2.3.1.3.1", 1); 																	// Input Power Control: Off(0), 13V(1), 18V(2), H-NIT(3), V-NIT(4)	
+		setOid("5.2.2.1.5.1", Utility.getIntVal(StabilitySetup.properties.get("Uplink.OscFrequency1"))); 	// Active input local OSC Freq #1
+		setOid("5.2.2.1.5.2", Utility.getIntVal(StabilitySetup.properties.get("Uplink.OscFrequency2"))); 	// Active input local OSC Freq #2
+		setOid("5.2.2.1.5.3", Utility.getIntVal(StabilitySetup.properties.get("Uplink.OscFrequency3"))); 	// Active input local OSC Freq #3
+		setOid("5.2.2.1.5.4", Utility.getIntVal(StabilitySetup.properties.get("Uplink.OscFrequency4"))); 	// Active input local OSC Freq #4
 		setOid("5.4.1.1.2.1", 1); 																	// SI Receive Acquisition Modulation Mode: Std(1), Open(2)
 		setOid("5.4.1.1.4.1", 1); 																	// Network ID
-		setOid("5.8.1.5.0",   1); 																	// CAM Mode: Std(1), Open(2)
+		//???setOid("5.8.1.5.0",   1); 																	// CAM Mode: Std(1), Open(2)
 		setOid("5.4.1.1.6.1", 1); 																	// Receive Frequency Select Option: NIT(1), UserCfg(2)
 		setOid("5.4.1.1.7.1", 1); 																	// Receive Service List Mode: Rigorous(1), Degradate(1)
 		setOid("5.4.1.1.8.1", 1); 																	// Receive Option BAT: Yes(2), No(1)

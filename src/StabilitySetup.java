@@ -27,7 +27,7 @@ import java.util.Properties;
 
 public class StabilitySetup {
 	
-	private  static final 	String copyRight	= "\n(c) Cisco Systems 2014 by A.Godin $Build 1.0.7 Mar 27 2014";
+	private  static final 	String copyRight	= "\n(c) Cisco Systems 2014 by A.Godin $Build 1.1.0  Apr 2 2014";
 	private  static String 	propertyFileName	= "sts.properties";
 	public  static boolean 	verbose				= false;
 	public  static String 	outputDirectory		= ".";	
@@ -38,26 +38,29 @@ public class StabilitySetup {
 	private Date   myDay 		   = new Date();
 	private String[] propName = new String[] {
 		
-		"AciveRFInput", "LO1Frequency", "RollOff",
-		"OscFrequency1", "OscFrequency2", "OscFrequency3", "OscFrequency4",
-		"channel", "testSchedule", 
-		"scoreBoardD9824", "scoreBoardD9824StartLineDpm", 
-		"scoreBoardD9854", "scoreBoardD9854StartLineDpm", 
-		"scoreBoardD9854_I", "scoreBoardD9854StartLineDpm", 
-		"scoreBoardD9858", "scoreBoardD9858StartLineDpm", "scoreBoardD9858StartLineTxc",
-		"scoreBoardD9859", "scoreBoardD9859StartLineDpm", "scoreBoardD9859StartLineTxc"	
+	    "Uplink.LO1Frequency", "Uplink.RollOff", "Uplink.OscFrequency1", "Uplink.OscFrequency2", "Uplink.OscFrequency3", "Uplink.OscFrequency4",
+	    
+		"D9824.channel",	"D9824.schedule", 	"D9824.schedule.StartLine", 	"D9824.scoreboard", 	"D9824.scoreboard.StartLineDpm", 										"D9824.RF",
+	
+		"D9854.channel", 	"D9854.schedule", 	"D9854.schedule.StartLine", 	"D9854.scoreboard", 	"D9854.scoreboard.StartLineDpm", 										"D9854.RF",
+		
+		"D9854_I.channel", 	"D9854_I.schedule", "D9854_.schedule.StartLine", 	"D9854_I.scoreboard", 	"D9854_I.scoreboard.StartLineDpm", 										"D9854_I.RF",
+	
+		"D9858.channel", 	"D9858.schedule", 	"D9858.schedule.StartLine", 	"D9858.scoreboard", 	"D9858.scoreboard.StartLineDpm", 	"D9858.scoreboard.StartLineTxc", 	"D9858.RF",
+		
+		"D9859.channel", 	"D9859.schedule", 	"D9859.schedule.StartLine", 	"D9859.scoreboard", 	"D9859.scoreboard.StartLineDpm", 	"D9859.scoreboard.StartLineTxc", 	"D9859.RF"
+			
 	};
 	private String[] propDefaultVal = new String[] {
 			
-		"1", "12030000", "1",
-		"12030000", "12030000", "12030000", "12030000",
-		"101", "StabilityTestPlan.xlsx",
-		"StabiliyTests_Grid_Scoreboard.xlsm", "9",
-		"StabiliyTests_Grid_Scoreboard.xlsm", "9",
-		"StabiliyTests_Grid_Scoreboard.xlsm", "9",
-		"StabiliyTests_Grid_Scoreboard.xlsm", "9", "10",
-		"StabiliyTests_Grid_Scoreboard.xlsm", "9", "10",
+		"12030000", "1", "12030000", "12030000", "12030000", "12030000",
+		"101", "StabilityTests Schedulle", "2", "StabilityTestPlan.xlsx", "StabiliyTests_Grid_Scoreboard.xlsm", "9", "1",
+		"101", "StabilityTests Schedulle", "2", "StabiliyTests_Grid_Scoreboard.xlsm", "9", "1", 
+		"101", "StabilityTests Schedulle", "2", "StabiliyTests_Grid_Scoreboard.xlsm", "9", "1",
+		"101", "StabilityTests Schedulle", "2", "StabiliyTests_Grid_Scoreboard.xlsm", "9", "10", "1",
+		"101", "StabilityTests Schedulle", "2", "StabiliyTests_Grid_Scoreboard.xlsm", "9", "10", "1"
 	};
+	private int rfSource;
 
 	
 	void printHelp()
@@ -102,8 +105,8 @@ public class StabilitySetup {
 			} // i
 			System.out.println();
 			
-			if(channelNumber < 0)
-				channelNumber = Utility.getIntVal(prop.getProperty("channel"));
+//			if(channelNumber < 0)
+//				channelNumber = Utility.getIntVal(prop.getProperty("D9859.channel"));
 
 		} catch (IOException ex) {
 			System.err.println("Can not open property file '" + propertyFileName + "' ... Using default paramenters!\n\n");
@@ -143,7 +146,6 @@ public class StabilitySetup {
             		int cn = Utility.getIntVal(args[++i]);
             		if(cn != Utility.BAD_INT)
             			channelNumber = cn;
-            		
             		break;
             		
             	case 'd':
@@ -158,7 +160,7 @@ public class StabilitySetup {
             		
             	case 'v':
             	case 'V':
-            			verbose = true;
+            		verbose = true;
             		break;
             		
             	case 'p':
@@ -174,7 +176,6 @@ public class StabilitySetup {
             	case 'h':
             	case 'H':
             		printHelp();
-            		
             		return 1;
 
             	default:
@@ -204,31 +205,40 @@ public class StabilitySetup {
 	void makeIt()
 	{	
 	   ReadSchedule sched = new ReadSchedule(myDay);
-	   System.out.println("* Active channel : " + channelNumber + "\n");
+//	   if(!sched.isFound()) {
+//		   System.err.println("Error: fail to find required day into test schedulle! Did you test schedule over?\n");
+//		   System.exit(1);
+//	   }
+	   
+	   if(channelNumber < 0)
+		   channelNumber = sched.getChan();
+	   rfSource = sched.getRfSource();
+	   System.out.println("* Active channel : " + channelNumber + "  RF Source : " +  (rfSource==0?"ASI":"RF") + "\n");
+	   
 	   
 	   // uplink setup
 	   System.out.println("** Generating Uplink Setup Work Order ...");
-	   Uplink uplink  = new Uplink(myDay, channelNumber, sched.getParam());
+	   Uplink uplink  = new Uplink(myDay, sched);
 	   uplink.makeConfig();
        
 		System.out.println("** Generating D9824 Stability config ...");
-		D9824 d9824 = new D9824(myDay, channelNumber, sched.getDpm2(), sched.getDpm1());  
+		D9824 d9824 = new D9824(myDay, sched); 
 		d9824.makeBackupFile();
    
 	   System.out.println("** Generating D9854 Stability config ...");
-	   D9854 d9854 = new D9854(myDay, channelNumber, sched.getDpm2(), sched.getDpm1());  
+	   D9854 d9854 = new D9854(myDay, sched); 
 	   d9854.makeBackupFile();
 	  
 		System.out.println("** Generating D9854i Stability config ...");
-		D9854I d9854i = new D9854I(myDay, channelNumber, sched.getDpm2(), sched.getDpm1());  
+		D9854I d9854i = new D9854I(myDay, sched);  
 		d9854i.makeBackupFile();
 
 	   System.out.println("** Generating D9858 Stability config ...");
-	   D9858 d9858 = new D9858(myDay, channelNumber, sched.getTxc1(), sched.getTxc2(), sched.getDpm1());  
+	   D9858 d9858 = new D9858(myDay, sched);   
 	   d9858.makeBackupFile();
 	   
 	   System.out.println("** Generating D9859 Stability config ...");
-	   D9859 d9859 = new D9859(myDay, channelNumber, sched.getTxc1(), sched.getTxc2(), sched.getDpm1(), sched.getInput());  
+	   D9859 d9859 = new D9859(myDay, sched);  
 	   d9859.makeBackupFile();
 	     
 	   System.out.println("\n***  Stability configurations are completed  ***\n");

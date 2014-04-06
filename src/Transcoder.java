@@ -103,7 +103,6 @@ public abstract class Transcoder extends Decoder {
 			
 			//---setOid("37.2.1.1.13.", iStart, iFinish, 0x01);	// transcoding enabled (YES - 1, NO - 0)
 			
-			setOid("4.2.1.1.2.", iStart, iFinish, channelNumber);		// set channel
 			setOid("37.2.1.1.8.",  iStart, iFinish, hRes);			// HD_HRES
 			setOid("37.2.1.1.9.", iStart, iFinish, bitRateMode);	// HD_BitRateMode
 			setOid("37.2.1.1.10.", iStart, iFinish, rate);			// HD_Rate

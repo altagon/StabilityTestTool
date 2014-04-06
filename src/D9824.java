@@ -21,18 +21,20 @@ public class D9824 extends Decoder {
 	final static int 	MAX_CHAN 		= 8;
 	final static int 	DPM_PER_CHAN	= 15;
 	final static String DEVICE_NAME 	= "D9824";
+	final static int	DESIGNATION_NUM = 13;
 	
 	private int dpm;
-	private int inp;
 	
 			
-	D9824(Date myDay, int channelNumber, int dpm, int inp) 
+	D9824(Date myDay, ReadSchedule sched) 
 	{
 		super(myDay);
 		
-		this.channelNumber = channelNumber;
-		this.dpm = dpm;
-		this.inp  = inp;
+		this.channelNumber = sched.getChan();
+		this.dpm  = sched.getDpm2();
+		this.inp  = sched.getInput();
+		this.rfSource = sched.getRfSource();
+
 	}	
 	
 	void makeBackupFile()
@@ -54,7 +56,7 @@ public class D9824 extends Decoder {
 	
 	void configRFParam()
 	{
-		super.configRFParam(DEVICE_NAME, inp);
+		super.configRFParam(DEVICE_NAME);
 	}
 
 	void configDpmParam()
@@ -65,7 +67,7 @@ public class D9824 extends Decoder {
 
 	void createBackupFile()
 	{
-		super.createBackupFile(DEVICE_NAME);	
+		super.createBackupFile(DEVICE_NAME, DESIGNATION_NUM);	
 	}
 
 	

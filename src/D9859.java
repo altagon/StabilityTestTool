@@ -19,26 +19,26 @@ public class D9859 extends Transcoder {
 	final static int 	MAX_CHAN 		= 8;
 	final static int 	DPM_PER_CHAN	= 15;
 	final static String DEVICE_NAME 	= "D9859";
-	
+	final static int	DESIGNATION_NUM = 14;
 	private int txc1;
 	private int txc2;
 	private int dpm;
-	private int inp;
+
 	
-	
-	D9859(Date myDay, int channelNumber, int txc1,  int txc2,  int dpm, int inp) 
+	D9859(Date myDay, ReadSchedule sched) 
 	{
 		super(myDay);
 		super.setMaxTxcChan(MAX_CHAN);
 		
-		this.channelNumber = channelNumber;
-		this.txc1 = txc1;
-		this.txc2 = txc2;
-		this.dpm  = dpm;
-		this.inp  = inp;
+		this.channelNumber = sched.getChan();
+		this.txc1 = sched.getTxc1();
+		this.txc2 = sched.getTxc2();
+		this.dpm  = sched.getDpm1();
+		this.inp  = sched.getInput();
+		this.rfSource = sched.getRfSource();
 		
 	}
-	
+
 	void makeBackupFile()
 	{
 	   ReadTestCaseParam testCaseParam = new ReadTestCaseParam(txc1, txc2, dpm, DEVICE_NAME);
@@ -63,12 +63,12 @@ public class D9859 extends Transcoder {
 	
 	void configRFParam()
 	{
-		super.configRFParam(DEVICE_NAME, inp);
+		super.configRFParam(DEVICE_NAME);
 	}
 
 	void createBackupFile()
 	{
-		super.createBackupFile(DEVICE_NAME);
+		super.createBackupFile(DEVICE_NAME, DESIGNATION_NUM);	
 	}
 	
 }

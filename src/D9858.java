@@ -20,22 +20,24 @@ public class D9858 extends Transcoder {
 	final static int 	MAX_CHAN 		= 2;
 	final static int 	DPM_PER_CHAN	= 15;
 	final static String DEVICE_NAME 	= "D9858";
+	final static int	DESIGNATION_NUM = 11;
 	
 	private int txc1;
 	private int txc2;
 	private int dpm;
-	private int inp;
 	
 		
-	D9858(Date myDay, int channelNumber, int txc1,  int txc2,  int dpm) 
+	D9858(Date myDay, ReadSchedule sched) 
 	{
 		super(myDay);
 		super.setMaxTxcChan(MAX_CHAN);
 		
-		this.channelNumber = channelNumber;
-		this.txc1 = txc1;
-		this.txc2 = txc2;
-		this.dpm  = dpm;
+		this.channelNumber = sched.getChan();
+		this.txc1 = sched.getTxc1();
+		this.txc2 = sched.getTxc2();
+		this.dpm  = sched.getDpm1();
+		this.inp  = sched.getInput();
+		this.rfSource = sched.getRfSource();
 		
 	}
 	
@@ -47,6 +49,7 @@ public class D9858 extends Transcoder {
 	   dpmParam = testCaseParam.getDpmParam();
 		
 	   if(txcParam[0].size() > 0 && txcParam[1].size() > 0 && dpmParam.size() > 0 )	{
+		   configRFParam();
 		   configTxcParam();
 		   configDpmParam();
 		   createBackupFile();
@@ -64,13 +67,13 @@ public class D9858 extends Transcoder {
 
 	void configRFParam()
 	{
-		super.configRFParam(DEVICE_NAME, inp);
+		super.configRFParam(DEVICE_NAME);
 	}
 
 
 	void createBackupFile()
 	{
-		super.createBackupFile(DEVICE_NAME);	
+		super.createBackupFile(DEVICE_NAME, DESIGNATION_NUM);		
 	}
 	
 }

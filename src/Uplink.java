@@ -13,6 +13,7 @@ public class Uplink {
 	private int channelNumber;
 	private ArrayList<String> param;
 	private StringBuffer buf = new StringBuffer();
+	private int rfSource;
 
 
 	private void printTCParam(int tabNum, int startLine, int tcNum, String[] tcParamName)
@@ -28,11 +29,12 @@ public class Uplink {
 
 	}
 	
-	Uplink(Date myDay, int channelNumber, ArrayList<String> param)
+	Uplink(Date myDay, ReadSchedule sched)
 	{
 		this.myDay = myDay;
-		this.channelNumber = channelNumber;
-		this.param = param;
+		this.channelNumber = sched.getChan();
+		this.param = sched.getParam();
+		this.rfSource = sched.getRfSource();
 	}
 	
 
@@ -43,7 +45,7 @@ public class Uplink {
 		buf.append("\t\tUplink Setup Work order for " + myDay.toString() + "  Rel 0.2\n");
 		buf.append("\t\t-----------------------------------------------------------------\n\n");
 		
-		buf.append("\n1. Channel : " + channelNumber + "\n");
+		buf.append("\n1. Channel : " + channelNumber + " RF Source : " + (rfSource==0?"ASI":"RF") + "\n");
 		buf.append("\n2. Physical Connection : " + param.get(16) + "\n");	
 		
 		

@@ -22,18 +22,20 @@ public class D9854I extends Decoder {
 	final static int 	MAX_CHAN 		= 8;
 	final static int 	DPM_PER_CHAN	= 15;
 	final static String DEVICE_NAME 	= "D9854_I";
+	final static int	DESIGNATION_NUM = 9;
 	
-	private int dpm;
-	private int inp;
+	private int dpm;	
 	
-		
-	D9854I(Date myDay, int channelNumber, int dpm, int inp) 
+	
+	D9854I(Date myDay, ReadSchedule sched) 
 	{
 		super(myDay);
 		
-		this.channelNumber = channelNumber;
-		this.dpm = dpm;
-		this.inp  = inp;
+		this.channelNumber = sched.getChan();
+		this.dpm  = sched.getDpm2();
+		this.inp  = sched.getInput();
+		this.rfSource = sched.getRfSource();
+
 	}	
 	
 	void makeBackupFile()
@@ -60,12 +62,12 @@ public class D9854I extends Decoder {
 
 	void configRFParam()
 	{
-		super.configRFParam(DEVICE_NAME, inp);
+		super.configRFParam(DEVICE_NAME);
 	}
 
 	void createBackupFile()
 	{
-		super.createBackupFile(DEVICE_NAME);	
+		super.createBackupFile(DEVICE_NAME, DESIGNATION_NUM);	
 	}
 	
 }
