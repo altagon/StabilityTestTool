@@ -36,12 +36,22 @@ public class ReadSchedule {
 	public boolean isFound() 	{ return bFound; }
 	
 	public int getChan()  		{ return Utility.getIntVal(schedParam.get(1)); }
+	public int getVid()  		{ return Utility.getIntVal(schedParam.get(4)); }
+	public int getMpe()  		{ return Utility.getIntVal(schedParam.get(10)); }
 	public int getInput() 		{ return Utility.getIntVal(schedParam.get(2)); }
 	public int getTxc1()  		{ return Utility.getIntVal(schedParam.get(13)); }
 	public int getTxc2()  		{ return Utility.getIntVal(schedParam.get(14)); }
 	public int getDpm1()  		{ return Utility.getIntVal(schedParam.get(15)); }
 	public int getDpm2()  		{ return Utility.getIntVal(schedParam.get(16)); }
-	public int getRfSource() 	{ return  schedParam.get(20).equalsIgnoreCase("ASI")?0:1; }
+	public int getRfSource() 	
+	{ 
+		if(schedParam.get(20).equalsIgnoreCase("ASI"))
+			return 0;
+		else if(schedParam.get(20).equalsIgnoreCase("RF"))
+			return 1;
+		else	// MPEGoIP
+			return 2;
+	}
 	
 	public ReadSchedule(String devName, Date today)
     {	
@@ -70,7 +80,7 @@ public class ReadSchedule {
     	calToday.setTime(today);
     	
         try {
-        	FileInputStream scheduleStream = new FileInputStream(StabilitySetup.properties.get(devName+"."+"schedule"));
+        	FileInputStream scheduleStream = new FileInputStream(Utility.getPropVal(devName, "schedule"));
             //Get the workbook instance for XLS file
             XSSFWorkbook workBook = new XSSFWorkbook(scheduleStream);
             //Get first sheet from the workbook
@@ -78,7 +88,7 @@ public class ReadSchedule {
             int startLine = 1;
             
             try {
-            	startLine = Integer.parseInt(StabilitySetup.properties.get(devName+"."+"schedule.StartLine"));
+            	startLine = Integer.parseInt(Utility.getPropVal(devName, "schedule.StartLine"));
             } catch(Exception e) {}
             
             for (int lineId = startLine; ; lineId++) {
@@ -127,7 +137,7 @@ public class ReadSchedule {
             
             // required test date was not found
             if(!bFound) {
-            	System.out.println("Schedulle Error: Required date was not found : " +today.toString() + "!!! Your schedule may be expired ...\n");
+            	System.out.println("Schedulle Error: Required date was not found : " + today.toString() + "!!! Your schedule may be expired ...\n");
             	System.exit(1);
             }
             
@@ -137,5 +147,10 @@ public class ReadSchedule {
         } 
         
     }
+
+	public boolean getAsiScramb() 
+	{
+		return !schedParam.get(22).trim().isEmpty();
+	}
 
 }

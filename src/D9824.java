@@ -22,19 +22,11 @@ public class D9824 extends Decoder {
 	final static int 	DPM_PER_CHAN	= 15;
 	final static String DEVICE_NAME 	= "D9824";
 	final static int	DESIGNATION_NUM = 13;
-	
-	private int dpm;
-	
-			
+				
 	D9824(Date myDay, ReadSchedule sched) 
 	{
-		super(myDay);
+		super(myDay, sched);
 		
-		this.channelNumber = sched.getChan();
-		this.dpm  = sched.getDpm2();
-		this.inp  = sched.getInput();
-		this.rfSource = sched.getRfSource();
-
 	}	
 	
 	void makeBackupFile()
@@ -49,7 +41,7 @@ public class D9824 extends Decoder {
 		   createBackupFile();
 	   }
 	   else {
-		   System.out.println("D9854: Can not obtain DPM parameters. Please check your configuration!\n");
+		   System.out.println("D9824: Can not obtain DPM parameters. Please check your configuration!\n");
 	   }
 	   
 	}

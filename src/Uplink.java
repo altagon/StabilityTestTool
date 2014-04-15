@@ -45,7 +45,7 @@ public class Uplink {
 		buf.append("\t\tUplink Setup Work order for " + myDay.toString() + "  Rel 0.2\n");
 		buf.append("\t\t-----------------------------------------------------------------\n\n");
 		
-		buf.append("\n1. Channel : " + channelNumber + " RF Source : " + (rfSource==0?"ASI":"RF") + "\n");
+		buf.append("\n1. Channel : " + channelNumber + " RF Source : " + (rfSource==0?"ASI":(rfSource==1?"RF":"MPEGoIP")) + "\n");
 		buf.append("\n2. Physical Connection : " + param.get(16) + "\n");	
 		
 		

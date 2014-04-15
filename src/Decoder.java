@@ -18,11 +18,21 @@ import java.util.Date;
 
 public abstract class Decoder extends SADevice {
 	
-	public ArrayList<String> dpmParam = new ArrayList<String>();
+	protected ArrayList<String> dpmParam = new ArrayList<String>();
+	protected int dpm;
 	
-	Decoder(Date myday) 
+	Decoder(Date myday, ReadSchedule sched) 
 	{
 		super(myday);
+		
+		this.channelNumber = sched.getChan();
+		this.dpm  = sched.getDpm2();
+		this.inp  = sched.getInput();
+		this.vid  = sched.getVid(); 
+		this.mpe  = sched.getMpe();
+		this.rfSource = sched.getRfSource();
+		this.asiScramb = sched.getAsiScramb();
+	
 	}
 	
 	boolean isDecoder() 	{ return true; }
@@ -59,12 +69,6 @@ public abstract class Decoder extends SADevice {
 		// PMT PID 6000+shift
 		setOidFunc1("36.2.2.1.4.1.", 1, maxChan);
 	
-		setOid("34.1.1.5.1", 2);		// RateControl {auto(1), user(2)}
-		setOid("34.1.1.6.1", 68500000); // ASI UserRate 0..206000000 (default 68.5 Mb/sec)
-		setOid("34.1.1.3.1", 7);		// Output Mode { noOutput(1), passThrough(2), serviceChannelOnly(3), mapPassthrough(4), mapserviceChannelOnly(5), fullDpmControl(6), transcoding(7) }
-		setOid("34.1.1.4.1", 1); 		// Scrambling Mode { deScrambled(1), scrambled (2)}
-		setOid("34.1.1.7.1", 2);		// Null Packet Insert { no(1), yes (2)}
-
 		setOid("36.2.1.1.3.1",  indexOf(mapMode, dpmParam.get(8-1).toString()));		// C8
 		setOid("36.2.1.1.4.1",  indexOf(duplicMode, dpmParam.get(9-1).toString())); 	// C9
 		setOid("36.2.1.1.6.1",  indexOf(unref, dpmParam.get(10-1).toString()));		// C10

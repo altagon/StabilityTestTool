@@ -21,18 +21,10 @@ public class D9854 extends Decoder {
 	final static int 	DPM_PER_CHAN	= 15;
 	final static String DEVICE_NAME 	= "D9854";
 	final static int	DESIGNATION_NUM = 9;
-	
-	private int dpm;
-	
+		
 	D9854(Date myDay, ReadSchedule sched) 
 	{
-		super(myDay);
-		
-		this.channelNumber = sched.getChan();
-		this.dpm  = sched.getDpm2();
-		this.inp  = sched.getInput();
-		this.rfSource = sched.getRfSource();
-
+		super(myDay, sched);
 	}	
 	
 	void makeBackupFile()

@@ -23,19 +23,23 @@ public abstract class Transcoder extends Decoder {
 	public ArrayList<String>[] txcParam 	= new ArrayList[2];
 	
 	private int maxTxcChannel;
+	protected int txc1;
+	protected int txc2;
 	
 	
-	Transcoder(Date myday) 
+	Transcoder(Date myday, ReadSchedule sched, int maxTcChan) 
 	{
-		super(myday);
-	}	
-	
-	public void setMaxTxcChan(int chan) { maxTxcChannel = chan; }
-	public int getMaxTxcChan() 			{ return maxTxcChannel; }
+		super(myday, sched);
+		
+		this.dpm  = sched.getDpm1();
+		this.txc1 = sched.getTxc1();
+		this.txc2 = sched.getTxc2();
+		maxTxcChannel = maxTcChan;
+}	
 	public boolean isDecoder() 			{ return false; }
 	public boolean isTranscoder() 		{ return true; }
 
-	void configTxcParam()
+	void configTxcParam(int actChanNum)
 	{
 		
 		@SuppressWarnings("serial")
@@ -77,7 +81,7 @@ public abstract class Transcoder extends Decoder {
 		
 		// loop to distribute transcode case#1 to channel 1..N/2 and transcode  case#2 to channel (N/2+1)..N
 		for(int i = 0; i < 2; i ++) {
-			int iStart = i* maxTxcChannel/2 + 1;
+			int iStart = i* actChanNum/2 + 1;
 			int iFinish =(i+1) * maxTxcChannel/2;
 			
 			Integer quality = txcParam[i].get(5).equalsIgnoreCase("sd")?0x05:0x04;		
@@ -121,8 +125,12 @@ public abstract class Transcoder extends Decoder {
 			setOid("37.2.1.1.5.", iStart, iFinish, 1);				// transcoderCfgPkt2 {None(1), CEA 708(2), SCTE-20(3)} - always None		
 			setOid("37.2.1.1.3.", iStart, iFinish, quality);		// HDSDOutput1 { SD - 04, HD - 05}
 			
+			if(actChanNum == 1)		// second set of transcoding settings does not have sense when only ONE channel is active
+				break;
 		} // i
+		
 		addComment("*** Ens Transcode Section ***");
+		
 	}
 
 

@@ -20,23 +20,10 @@ public class D9859 extends Transcoder {
 	final static int 	DPM_PER_CHAN	= 15;
 	final static String DEVICE_NAME 	= "D9859";
 	final static int	DESIGNATION_NUM = 14;
-	private int txc1;
-	private int txc2;
-	private int dpm;
-
 	
 	D9859(Date myDay, ReadSchedule sched) 
 	{
-		super(myDay);
-		super.setMaxTxcChan(MAX_CHAN);
-		
-		this.channelNumber = sched.getChan();
-		this.txc1 = sched.getTxc1();
-		this.txc2 = sched.getTxc2();
-		this.dpm  = sched.getDpm1();
-		this.inp  = sched.getInput();
-		this.rfSource = sched.getRfSource();
-		
+		super(myDay, sched, MAX_CHAN);
 	}
 
 	void makeBackupFile()
@@ -45,14 +32,15 @@ public class D9859 extends Transcoder {
 	   
 	   txcParam = testCaseParam.getTxcParam();
 	   dpmParam = testCaseParam.getDpmParam();
+	   
 	   if(txcParam[0].size() > 0 && txcParam[1].size() > 0 && dpmParam.size() > 0 )	{
-		   configRFParam();
-		   configTxcParam();
+		   int actChanNum = configRFParam();
+		   configTxcParam(actChanNum);
 		   configDpmParam();
 		   createBackupFile();
 	   }
 	   else {
-		   System.out.println("D9859: Can not obtain DPM parameters. Please check your configuration!\n");
+		   System.err.println("D9859: Can not obtain DPM parameters. Please check your configuration!\n");
 	   }
 	}
 	
@@ -61,9 +49,9 @@ public class D9859 extends Transcoder {
 		super.configDpmParam(MAX_CHAN, DPM_PER_CHAN);
 	}
 	
-	void configRFParam()
+	int configRFParam()
 	{
-		super.configRFParam(DEVICE_NAME);
+		return super.configRFParam(DEVICE_NAME);
 	}
 
 	void createBackupFile()

@@ -41,7 +41,7 @@ public class ReadTestCaseParam {
 	
         try {
       
-        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get(devName +".scoreboard"));
+        	FileInputStream scoreBoardStream = new FileInputStream(Utility.getPropVal(devName, "scoreboard"));
             //Get the workbook instance for XLS file
             XSSFWorkbook workBook = new XSSFWorkbook(scoreBoardStream);
             
@@ -99,7 +99,7 @@ public class ReadTestCaseParam {
 	
         try {
 
-        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get(devName + ".scoreboard"));
+        	FileInputStream scoreBoardStream = new FileInputStream(Utility.getPropVal(devName, "scoreboard"));
             //Get the workbook instance for XLS file
             XSSFWorkbook workBook = new XSSFWorkbook(scoreBoardStream);
             
@@ -107,11 +107,11 @@ public class ReadTestCaseParam {
             // Get DPM test case parameters 
             //
             XSSFSheet sheet = workBook.getSheetAt(DPM_TAB);   
-            int startRow = 9;
-            try {
-            	startRow = Integer.parseInt(StabilitySetup.properties.get( devName + ".scoreboard.StartLineDpm"));
-            } catch(Exception e) {}
-
+            int startRow = Utility.getPropValInt( devName, "scoreboard.StartLineDpm");
+            
+            if(startRow == Utility.BAD_INT)
+            	startRow = 9;
+            
             for (int rowId = startRow; ; rowId++) {
             	//--- System.out.println("Row : " + rowId);
                 Row row = sheet.getRow(rowId);
@@ -166,7 +166,7 @@ public class ReadTestCaseParam {
 		
         try {
         	
-        	FileInputStream scoreBoardStream = new FileInputStream(StabilitySetup.properties.get(devName + ".scoreboard"));
+        	FileInputStream scoreBoardStream = new FileInputStream(Utility.getPropVal(devName,  "scoreboard"));
             //Get the workbook instance for XLS file
             XSSFWorkbook workBook = new XSSFWorkbook(scoreBoardStream);
             
@@ -174,11 +174,10 @@ public class ReadTestCaseParam {
             // Get transcode test case parameters 
             //
             XSSFSheet sheet = workBook.getSheetAt(TXC_TAB);   
-            int startRow = 10;
-            try {
-            	startRow = Integer.parseInt(StabilitySetup.properties.get(devName + ".scoreBoard.StartLineTxc"));
-            }
-            catch(Exception e) {}
+            int startRow = Utility.getPropValInt(devName, "scoreboard.StartLineTxc");
+            
+            if(startRow == Utility.BAD_INT)
+            	startRow = 10;
             
             for (int rowId=startRow; ; rowId++) {
             	//--- System.out.println("Row : " + rowId);
@@ -234,11 +233,10 @@ public class ReadTestCaseParam {
             // Get DPM test case parameters 
             //
             sheet = workBook.getSheetAt(DPM_TAB);   
-            try {
-            	startRow = Integer.parseInt(StabilitySetup.properties.get(devName + ".scoreboard.StartLineTxc"));
-            } catch(Exception e) {
+            startRow = Utility.getPropValInt(devName, "scoreboard.StartLineTxc");
+            if(startRow == Utility.BAD_INT)
             	startRow = 9;
-            }
+           
             for (int rowId = startRow; ; rowId++) {
             	//--- System.out.println("Row : " + rowId);
                 Row row = sheet.getRow(rowId);
