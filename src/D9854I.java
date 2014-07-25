@@ -21,7 +21,7 @@ public class D9854I extends Decoder {
 	
 	final static int 	MAX_CHAN 		= 8;
 	final static int 	DPM_PER_CHAN	= 15;
-	final static String DEVICE_NAME 	= "D9854_I";
+	final static String DEVICE_NAME 	= "D9854I";
 	final static int	DESIGNATION_NUM = 9;
 		
 	D9854I(Date myDay, ReadSchedule sched) 
@@ -29,7 +29,7 @@ public class D9854I extends Decoder {
 		super(myDay, sched);
 	}	
 	
-	void makeBackupFile()
+	int makeBackupFile()
 	{
 	   ReadTestCaseParam testCaseParam = new ReadTestCaseParam(dpm, DEVICE_NAME);
 	   
@@ -42,18 +42,25 @@ public class D9854I extends Decoder {
 	   }
 	   else {
 		   System.out.println("D9854: Can not obtain DPM parameters. Please check your configuration!\n");
+		   return 1;
 	   }
 	   
+	   return 0;
 	}
 	
 	void configDpmParam()
 	{
-		super.configDpmParam(MAX_CHAN, DPM_PER_CHAN);
+		int downlinkStat = super.configDpmParam(MAX_CHAN, DPM_PER_CHAN);
+		String downstreamDevice;
+		
+		if((downstreamDevice = STS.properties.get(DEVICE_NAME + ".DownstreamDeviceType")) != null) {
+			super.createDownlinkBackupFile(DEVICE_NAME, downstreamDevice, downlinkStat);
+		}
 	}
 
 	void configRFParam()
 	{
-		super.configRFParam(DEVICE_NAME);
+		super.configRFParam(DEVICE_NAME, MAX_CHAN);
 	}
 
 	void createBackupFile()

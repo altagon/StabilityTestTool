@@ -29,9 +29,9 @@ scoreBoardD9854StartLineDpm  = 9
 RF_D9854 = 1
 
 # D9854i scoreboard (test case information for specific device)
-scoreBoardD9854_I = \\Users\\algodin\\Documents\\Stability Test\\D9859-R1.10 Stab Tests_Grid_Scoreboard.xlsm 
-scoreBoardD9854_IStartLineDpm  = 9
-RF_D9854_I = 1
+scoreBoardD9854I = \\Users\\algodin\\Documents\\Stability Test\\D9859-R1.10 Stab Tests_Grid_Scoreboard.xlsm 
+scoreBoardD9854IStartLineDpm  = 9
+RF_D9854I = 1
 
 # D9858 scoreboard (test case information for specific device)
 scoreBoardD9858 = \\Users\\algodin\\Documents\\Stability Test\\D9859-R1.10 Stab Tests_Grid_Scoreboard.xlsm

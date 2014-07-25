@@ -51,7 +51,8 @@ public class ReadTestCaseParam {
             XSSFSheet sheet = workBook.getSheetAt(caseTab);   
 
             for (int rowId = startRow; ; rowId++) {
-            	//--- System.out.println("Row : " + rowId);
+            	if(STS.verbose > 1)
+            		System.out.println("Row : " + rowId);
                 Row row = sheet.getRow(rowId);
                 if(row == null) {
                 	break;
@@ -59,23 +60,27 @@ public class ReadTestCaseParam {
  
                 try {
                 	Cell caseId = row.getCell(0);
-                	//--- System.out.println(">"+caseId.toString()+"<");
+                	if(STS.verbose > 1)
+                		System.out.println(">"+caseId.toString()+"<");
                 	if(caseId.toString().equals("")) continue; 
                 	
                 	int id = Utility.getIntVal(caseId);
                 	
                 	if(id == caseNumber) {
-                		//System.out.println("DPM = " + caseId.toString() + '\n');
+                		if(STS.verbose > 1)
+                			System.out.println("DPM = " + caseId.toString() + '\n');
                 		for(int i = 1; ; i++) {
                 			Cell c = row.getCell(i);
                 			if(c != null) {
-                				//System.out.println((i) + " >" + c.toString() + "<");
+                				if(STS.verbose > 1)
+                					System.out.println((i) + " >" + c.toString() + "<");
                 				dpmParam.add(c.toString());
                 			}
                 			else 
                 				break;
                 		}
-                		//System.out.println();
+                		if(STS.verbose > 1)
+                			System.out.println();
                 		
                 	}
                  	
@@ -88,10 +93,16 @@ public class ReadTestCaseParam {
             } // rowId
               
         }
-        catch (IOException e) {
-            e.printStackTrace();                 
+        catch (IOException ioe) {
+        	System.out.println("I/O Error ReadTestCaseparam() : " + ioe.toString());           
         } 
-        
+        catch (NumberFormatException nfe) {
+        	System.out.println("String->Integer Conversion Error ReadTestCaseparam() : " + nfe.toString());           
+        } 
+        catch (Exception e) {
+        	System.out.println("General Error ReadTestCaseparam() : " + e.toString());           
+        } 
+    
     }
 
 	public ReadTestCaseParam(int dpm, String devName)
@@ -113,7 +124,8 @@ public class ReadTestCaseParam {
             	startRow = 9;
             
             for (int rowId = startRow; ; rowId++) {
-            	//--- System.out.println("Row : " + rowId);
+            	if(STS.verbose > 1)
+            		System.out.println("Row : " + rowId);
                 Row row = sheet.getRow(rowId);
                 if(row == null) {
                 	break;
@@ -121,25 +133,27 @@ public class ReadTestCaseParam {
  
                 try {
                 	Cell caseId = row.getCell(0);
-                	//--- System.out.println(">"+caseId.toString()+"<");
+                	if(STS.verbose > 1)
+                		System.out.println(">"+caseId.toString()+"<");
                 	if(caseId.toString().equals("")) continue; 
                 	
                 	int id = Utility.getIntVal(caseId);
                 	
                 	if(id == dpm) {
-                		//System.out.println("DPM = " + caseId.toString() + '\n');
+                		if(STS.verbose > 1)
+                			System.out.println("DPM = " + caseId.toString() + '\n');
                 		for(int i = 1; ; i++) {
                 			Cell c = row.getCell(i);
                 			if(c != null) {
-                				//System.out.println((i-1) + " >" + c.toString() + "<");
+                				if(STS.verbose > 1)
+                					System.out.println((i-1) + " >" + c.toString() + "<");
                 				dpmParam.add(c.toString());
-                				//---System.out.println("    " + dpmParam[0].size());
-                				
                 			}
                 			else 
                 				break;
                 		}
-                		//System.out.println();
+                		if(STS.verbose > 1)
+                			System.out.println();
                 		
                 	}
                  	
@@ -152,8 +166,14 @@ public class ReadTestCaseParam {
             } // rowId
               
         }
-        catch (IOException e) {
-            e.printStackTrace();                 
+        catch (IOException ioe) {
+        	System.out.println("I/O Error ReadTestCaseparam() : " + ioe.toString());           
+        } 
+        catch (NumberFormatException nfe) {
+        	System.out.println("String->Integer Conversion Error ReadTestCaseparam() : " + nfe.toString());           
+        } 
+        catch (Exception e) {
+        	System.out.println("General Error ReadTestCaseparam() : " + e.toString());           
         } 
         
     }
@@ -180,7 +200,8 @@ public class ReadTestCaseParam {
             	startRow = 10;
             
             for (int rowId=startRow; ; rowId++) {
-            	//--- System.out.println("Row : " + rowId);
+            	if(STS.verbose > 1)
+            		System.out.println("Row : " + rowId);
                 Row row = sheet.getRow(rowId);
                 if(row == null) {
                 	break;
@@ -188,37 +209,43 @@ public class ReadTestCaseParam {
  
                 try {
                 	Cell caseId = row.getCell(0);
-                	//--- System.out.println(">"+caseId.toString()+"<");
+                	if(STS.verbose > 1)
+                		System.out.println(">"+caseId.toString()+"<");
                 	if(caseId.toString().equals("")) continue; 
                 	
                 	int id = Utility.getIntVal(caseId);
                 	
                 	if(id == txc1) {
-                		//System.out.println("TXC1 = " + caseId.toString() + '\n');
+                		if(STS.verbose > 1)
+                			System.out.println("TXC1 = " + caseId.toString() + '\n');
                 		for(int i = 1; ; i++) {
                 			Cell c = row.getCell(i);
                 			if(c != null) {
-                				//System.out.println((i-1) + " >" + c.toString() + "<");
+                				if(STS.verbose > 1)
+                					System.out.println((i-1) + " >" + c.toString() + "<");
                 				txcParam[0].add(c.toString());
                 			}
                 			else 
                 				break;
                 		}
-                		//System.out.println();
+                		if(STS.verbose > 1)
+                			System.out.println();
                 		
                 	}
                 	if(id == txc2) {
-                		//System.out.println("TXC2 = " + caseId.toString() + '\n');
+                		if(STS.verbose > 1)
+                			System.out.println("TXC2 = " + caseId.toString() + '\n');
                 		for(int i = 1; ; i++) {
                 			Cell c = row.getCell(i);
                 			if(c != null) {
-                				//System.out.println((i-1) + " >" + c.toString() + "<");
+                				if(STS.verbose > 1)
+                					System.out.println((i-1) + " >" + c.toString() + "<");
                 				txcParam[1].add(c.toString());
                 			}
                 			else 
                 				break;
                 		}
-                		//System.out.println();
+                		if(STS.verbose > 1)System.out.println();
                 		
                 	}
                 	
@@ -233,12 +260,13 @@ public class ReadTestCaseParam {
             // Get DPM test case parameters 
             //
             sheet = workBook.getSheetAt(DPM_TAB);   
-            startRow = Utility.getPropValInt(devName, "scoreboard.StartLineTxc");
+            startRow = Utility.getPropValInt(devName, "scoreboard.StartLineDpm");
             if(startRow == Utility.BAD_INT)
             	startRow = 9;
            
             for (int rowId = startRow; ; rowId++) {
-            	//--- System.out.println("Row : " + rowId);
+            	if(STS.verbose > 1)
+            		System.out.println("Row : " + rowId);
                 Row row = sheet.getRow(rowId);
                 if(row == null) {
                 	break;
@@ -246,25 +274,27 @@ public class ReadTestCaseParam {
  
                 try {
                 	Cell caseId = row.getCell(0);
-                	//--- System.out.println(">"+caseId.toString()+"<");
+                	if(STS.verbose > 1)
+                		System.out.println(">"+caseId.toString()+"<");
                 	if(caseId.toString().equals("")) continue; 
                 	
                 	int id = Utility.getIntVal(caseId);
                 	
                 	if(id == dpm) {
-                		//System.out.println("DPM = " + caseId.toString() + '\n');
+                		if(STS.verbose > 1)
+                			System.out.println("DPM = " + caseId.toString() + '\n');
                 		for(int i = 1; ; i++) {
                 			Cell c = row.getCell(i);
                 			if(c != null) {
-                				//System.out.println((i-1) + " >" + c.toString() + "<");
+                				if(STS.verbose > 1)
+                					System.out.println((i-1) + " >" + c.toString() + "<");
                 				dpmParam.add(c.toString());
-                				//---System.out.println("    " + dpmParam[0].size());
-                				
                 			}
                 			else 
                 				break;
                 		}
-                		//System.out.println();
+                		if(STS.verbose > 1)
+                			System.out.println();
                 		
                 	}
                  	
@@ -277,8 +307,14 @@ public class ReadTestCaseParam {
             } // rowId
               
         }
-        catch (IOException e) {
-            e.printStackTrace();                 
+        catch (IOException ioe) {
+        	System.out.println("I/O Error ReadTestCaseparam() : " + ioe.toString());           
+        } 
+        catch (NumberFormatException nfe) {
+        	System.out.println("String->Integer Conversion Error ReadTestCaseparam() : " + nfe.toString());           
+        } 
+        catch (Exception e) {
+        	System.out.println("General Error ReadTestCaseparam() : " + e.toString());           
         } 
         
     }

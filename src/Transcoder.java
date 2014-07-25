@@ -47,11 +47,11 @@ public abstract class Transcoder extends Decoder {
 			
 			put("Full",0x780);
 			put("3/4", 0x5A0);
-			put("720", 0x2D0);
-			put("704", 0x2C0);
-			put("544", 0x220);
-			put("480", 0x1E0);
-			put("352", 0x160);
+			put("720.0", 0x2D0);
+			put("704.0", 0x2C0);
+			put("544.0", 0x220);
+			put("480.0", 0x1E0);
+			put("352.0", 0x160);
 		}};
 		
 		@SuppressWarnings("serial")
@@ -105,25 +105,32 @@ public abstract class Transcoder extends Decoder {
 			if(convAR == null) convAR = 3;
 			Integer pullDown32 = txcParam[i].get(12).equalsIgnoreCase("on")?2:1;
 			
-			//---setOid("37.2.1.1.13.", iStart, iFinish, 0x01);	// transcoding enabled (YES - 1, NO - 0)
+			//---setOid("5.37.2.1.1.13.", iStart, iFinish, 0x01);	// transcoding enabled (YES - 1, NO - 0)
 			
-			setOid("37.2.1.1.8.",  iStart, iFinish, hRes);			// HD_HRES
-			setOid("37.2.1.1.9.", iStart, iFinish, bitRateMode);	// HD_BitRateMode
-			setOid("37.2.1.1.10.", iStart, iFinish, rate);			// HD_Rate
-			setOid("37.2.1.1.11.", iStart, iFinish, gopControl);	// HD_UserGOP1 {!FrameSync - 1, User Gop(MN) - 2}
-			setOid("37.2.1.1.12.", iStart, iFinish, userGOP);		// HD_UserGOP1 {1_0 - A, 12_2 - 7A, 15_2 - 98, 24_2 - F2, 30_2 - 12E}
-			setOid("37.2.1.1.13.", iStart, iFinish, pullDown32);	// HD 3:2 Pulldown1 { Disable - 01, Enable - 02}
-			setOid("37.2.1.1.17.", iStart, iFinish, hRes);			// SD_HRES
-			setOid("37.2.1.1.18.", iStart, iFinish, bitRateMode);	// SD_BitRateMode
-			setOid("37.2.1.1.19.", iStart, iFinish, rate);			// SD_Rate 
-			setOid("37.2.1.1.20.", iStart, iFinish, gopControl);	// SD_UserGOP1 {!FrameSync - 1, User Gop(MN) - 2}
-			setOid("37.2.1.1.21.", iStart, iFinish, userGOP);		// SD_UserGOP1 {1_0 - A, 12_2 - 7A, 15_2 - 98, 24_2 - F2, 30_2 - 12E}
-			setOid("37.2.1.1.22.", iStart, iFinish, pullDown32);	// SD 3:2 Pulldown1 { Disable - 01, Enable - 02} 
-			setOid("37.2.1.1.23.", iStart, iFinish, outputAR);		// SD_OutputAspectRatio 1 { 4:3 - 01, 16:9 - 02}
-			setOid("37.2.1.1.24.", iStart, iFinish, convAR);		// SD_AspectRatioConversion1 {None - 01, Auto -02, AutoAFD - 03,16:9L/B - 04, 4:3P/B - 05, 14:6 - 06, 4:3 CCO - 07, 16:9 SCALE - 08}  
-			setOid("37.2.1.1.4.", iStart, iFinish, 1);				// transcoderCfgPkt1 {None(1), CEA 708(2), SCTE-20(3)} - always None
-			setOid("37.2.1.1.5.", iStart, iFinish, 1);				// transcoderCfgPkt2 {None(1), CEA 708(2), SCTE-20(3)} - always None		
-			setOid("37.2.1.1.3.", iStart, iFinish, quality);		// HDSDOutput1 { SD - 04, HD - 05}
+			setOid("5.37.2.1.1.3.", iStart, iFinish, quality);		// HDSDOutput1 { SD - 04, HD - 05}
+			if(quality == 0x04)  {
+				setOid("5.37.2.1.1.8.",  iStart, iFinish, hRes);		// HD_HRES
+				setOid("5.37.2.1.1.9.", iStart, iFinish, bitRateMode);	// HD_BitRateMode
+				setOid("5.37.2.1.1.10.", iStart, iFinish, rate);		// HD_Rate
+				setOid("5.37.2.1.1.11.", iStart, iFinish, gopControl);	// HD_UserGOP1 {!FrameSync - 1, User Gop(MN) - 2}
+				if(userGOP != 0) 
+					setOid("5.37.2.1.1.12.", iStart, iFinish, userGOP);		// HD_UserGOP1 {1_0 - A, 12_2 - 7A, 15_2 - 98, 24_2 - F2, 30_2 - 12E}
+				setOid("5.37.2.1.1.13.", iStart, iFinish, pullDown32);	// HD 3:2 Pulldown1 { Disable - 01, Enable - 02}
+			}
+			else {
+				setOid("5.37.2.1.1.17.", iStart, iFinish, hRes);		// SD_HRES
+				setOid("5.37.2.1.1.18.", iStart, iFinish, bitRateMode);	// SD_BitRateMode
+				setOid("5.37.2.1.1.19.", iStart, iFinish, rate);		// SD_Rate 
+				setOid("5.37.2.1.1.20.", iStart, iFinish, gopControl);	// SD_UserGOP1 {!FrameSync - 1, User Gop(MN) - 2}
+				if(userGOP != 0)
+					setOid("5.37.2.1.1.21.", iStart, iFinish, userGOP);		// SD_UserGOP1 {1_0 - A, 12_2 - 7A, 15_2 - 98, 24_2 - F2, 30_2 - 12E}
+				setOid("5.37.2.1.1.22.", iStart, iFinish, pullDown32);	// SD 3:2 Pulldown1 { Disable - 01, Enable - 02} 
+				setOid("5.37.2.1.1.23.", iStart, iFinish, outputAR);	// SD_OutputAspectRatio 1 { 4:3 - 01, 16:9 - 02}
+				setOid("5.37.2.1.1.24.", iStart, iFinish, convAR);		// SD_AspectRatioConversion1 {None - 01, Auto -02, AutoAFD - 03,16:9L/B - 04, 4:3P/B - 05, 14:6 - 06, 4:3 CCO - 07, 16:9 SCALE - 08}  
+			}
+			
+			setOid("5.37.2.1.1.4.", iStart, iFinish, 1);				// transcoderCfgPkt1 {None(1), CEA 708(2), SCTE-20(3)} - always None
+			setOid("5.37.2.1.1.5.", iStart, iFinish, 1);				// transcoderCfgPkt2 {None(1), CEA 708(2), SCTE-20(3)} - always None		
 			
 			if(actChanNum == 1)		// second set of transcoding settings does not have sense when only ONE channel is active
 				break;

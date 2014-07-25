@@ -104,18 +104,20 @@ public class Uplink {
 
 		buf.append("\n\n***  End of Uplink Setup Work order  ***\n");
 		
+		String fileName = null;
 		try {
 			   SimpleDateFormat timeStamp = new SimpleDateFormat("dd-MMM-yyyy_HH-mm-ss");
 			   Calendar cal = Calendar.getInstance();
 			   
 			   cal.setTime(myDay);
-			   String fileName = "Uplink_Setup_" + timeStamp.format(cal.getTime()) + ".txt";
+			   fileName = STS.outputDirectory + "\\" + "Uplink_Setup_" + timeStamp.format(cal.getTime()) + ".txt";
 
 			FileOutputStream out = new FileOutputStream(fileName);
 			out.write(buf.toString().getBytes());
 			out.close();
+			
 		} catch(Exception e) {
-			System.err.println("Can not write into file " + "Uplink_Setup_");
+			System.out.println("Can not write into file " + fileName);
 		}
 
 		

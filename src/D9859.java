@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class D9859 extends Transcoder {
 	
-	final static int 	MAX_CHAN 		= 8;
+	final static int 	MAX_CHAN 		= 4;
 	final static int 	DPM_PER_CHAN	= 15;
 	final static String DEVICE_NAME 	= "D9859";
 	final static int	DESIGNATION_NUM = 14;
@@ -26,7 +26,7 @@ public class D9859 extends Transcoder {
 		super(myDay, sched, MAX_CHAN);
 	}
 
-	void makeBackupFile()
+	int makeBackupFile()
 	{
 	   ReadTestCaseParam testCaseParam = new ReadTestCaseParam(txc1, txc2, dpm, DEVICE_NAME);
 	   
@@ -40,18 +40,26 @@ public class D9859 extends Transcoder {
 		   createBackupFile();
 	   }
 	   else {
-		   System.err.println("D9859: Can not obtain DPM parameters. Please check your configuration!\n");
+		   System.out.println("D9859: Can not obtain TXC or DPM parameters. Please check your configuration! " + txcParam[0].size() + "  "+ txcParam[1].size() + "  "+ dpmParam.size() + "\n");
+		   return 1;
 	   }
+	   
+	   return 0;
 	}
 	
 	void configDpmParam()
 	{
-		super.configDpmParam(MAX_CHAN, DPM_PER_CHAN);
+		int downlinkStat = super.configDpmParam(MAX_CHAN, DPM_PER_CHAN);
+		String downstreamDevice;
+		
+		if((downstreamDevice = STS.properties.get(DEVICE_NAME + ".DownstreamDeviceType")) != null) {
+			super.createDownlinkBackupFile(DEVICE_NAME, downstreamDevice, downlinkStat);
+		}
 	}
 	
 	int configRFParam()
 	{
-		return super.configRFParam(DEVICE_NAME);
+		return super.configRFParam(DEVICE_NAME, MAX_CHAN);
 	}
 
 	void createBackupFile()

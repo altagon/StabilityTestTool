@@ -89,7 +89,10 @@ public class ReadSchedule {
             
             try {
             	startLine = Integer.parseInt(Utility.getPropVal(devName, "schedule.StartLine"));
-            } catch(Exception e) {}
+            } catch(Exception e) {
+            	System.out.println("Error: can not convert property 'schedule.StartLine' into int");
+            	System.exit(1);
+            }
             
             for (int lineId = startLine; ; lineId++) {
                 Row row = sheet.getRow(lineId);
@@ -111,22 +114,24 @@ public class ReadSchedule {
                    		for(int i = 1; ; i++) {
                 			Cell c = row.getCell(i);
                 			if(c != null) {
-                				//System.out.println((i-1) + " >" + c.toString() + "<");
+                				if(STS.verbose > 1 )
+                					System.out.println((i-1) + " >" + c.toString() + "<");
                 				schedParam.add(c.toString());
                 			}
                 			else 
                 				break;
                 		} // i 
-                		//System.out.println();
+                   		if(STS.verbose > 1 )
+                   			System.out.println();
                 		
-                		if(StabilitySetup.verbose)
+                		if(STS.verbose > 0)
                 			System.out.println("\n* Today's test #" + lineId + "  Date : " + curDate.toString() + "   " + 
                 								getTxc1() + "  " + getTxc2() + "  " + getDpm1() + "  " +getDpm2());
                    	    break;
                 	}
                	
                 } catch (ParseException e) {
-					System.err.println("!!!  wrong date format");
+					System.out.println("!!!  wrong date format");
                 }	
                 catch (NullPointerException e) {
                 	// empty schedule content
